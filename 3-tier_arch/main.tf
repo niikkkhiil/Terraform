@@ -5,29 +5,46 @@ provider "aws" {
 module "vpc" {
   source = "./modules/vpc"
   
-  vpc_cidr = "10.0.0.0/16"
+  vpc_cidr = var.vpc_cidr
   project_name = var.project_name
   environment = var.environment
-  availability_zones = ["ap-south-1a"]
-}
-
-module "security" {
-  source = "./modules/security"
-  
-  vpc_id = module.vpc.vpc_id
-  vpc_cidr_block = module.vpc.vpc_cidr_block
-  project_name = var.project_name
-  environment = var.environment
+  availability_zones = var.availability_zones
+  enable_nat_gateway = var.enable_nat_gateway
 }
 
 module "compute" {
   source = "./modules/compute"
   
-  ami_id = "ami-0912f71e06545ad88"
-  instance_type = "t2.micro"
+  ami_id = var.ami_id
+  instance_type = var.instance_type
+  project_name = var.project_name
+  environment = var.environment
+  vpc_id = module.vpc.vpc_id
   public_subnet_id = module.vpc.public_subnet_id
   private_subnet_id = module.vpc.private_subnet_id
-  web_sg_id = module.security.web_sg_id
-  app_sg_id = module.security.app_sg_id
-  db_sg_id = module.security.db_sg_id
+  web_ingress_ports = var.web_ingress_ports
+  app_ingress_ports = var.app_ingress_ports
+}
+
+module "alb" {
+  source = "./modules/alb"
+  
+  project_name = var.project_name
+  environment = var.environment
+  vpc_id = module.vpc.vpc_id
+  public_subnet_ids = module.vpc.public_subnet_ids
+  web_instance_id = module.compute.web_instance_id
+}
+
+module "rds" {
+  source = "./modules/rds"
+  
+  project_name = var.project_name
+  environment = var.environment
+  vpc_id = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnet_ids
+  app_security_group_id = module.compute.app_security_group_id
+  db_name = var.db_name
+  db_username = var.db_username
+  db_password = var.db_password
 }

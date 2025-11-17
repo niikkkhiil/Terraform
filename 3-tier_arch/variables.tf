@@ -1,47 +1,65 @@
 variable "environment" {
   description = "Environment name"
-  type        = string
-  default     = "dev"
+  type = string
 }
 
 variable "project_name" {
   description = "Project name for resource naming"
-  type        = string
-  default     = "3tier-app"
+  type = string
 }
 
 variable "vpc_cidr" {
   description = "CIDR block for VPC"
-  type        = string
-  default     = "10.0.0.0/16"
+  type = string
 }
 
 variable "availability_zones" {
   description = "List of availability zones"
-  type        = list(string)
-  default     = ["ap-south-1a", "ap-south-1b"]
+  type = list(string)
+}
+
+variable "ami_id" {
+  description = "AMI ID for EC2 instances"
+  type = string
 }
 
 variable "instance_type" {
   description = "EC2 instance type"
-  type        = string
-  default     = "t3.micro"
+  type = string
 }
 
-variable "key_pair_name" {
-  description = "EC2 Key Pair name"
-  type        = string
+variable "enable_nat_gateway" {
+  description = "Enable NAT Gateway for private subnet internet access"
+  type = bool
+  default = true
+}
+
+variable "web_ingress_ports" {
+  description = "List of ingress ports for web tier"
+  type = list(number)
+  default = [80, 443]
+}
+
+variable "app_ingress_ports" {
+  description = "List of ingress ports for app tier"
+  type = list(number)
+  default = [8080]
+}
+
+variable "db_name" {
+  description = "Database name"
+  type = string
+  default = "myapp"
 }
 
 variable "db_username" {
-  description = "Database master username"
-  type        = string
-  default     = "admin"
-  sensitive   = true
+  description = "Database username"
+  type = string
+  default = "admin"
 }
 
-variable "enable_monitoring" {
-  description = "Enable detailed monitoring"
-  type        = bool
-  default     = true
+variable "db_password" {
+  description = "Database password"
+  type = string
+  sensitive = true
 }
