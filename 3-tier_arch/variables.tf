@@ -31,31 +31,26 @@ variable "instance_type" {
 variable "enable_nat_gateway" {
   description = "Enable NAT Gateway for private subnet internet access"
   type = bool
-  default = true
 }
 
 variable "web_ingress_ports" {
   description = "List of ingress ports for web tier"
   type = list(number)
-  default = [80, 443]
 }
 
 variable "app_ingress_ports" {
   description = "List of ingress ports for app tier"
   type = list(number)
-  default = [8080]
 }
 
 variable "db_name" {
   description = "Database name"
   type = string
-  default = "myapp"
 }
 
 variable "db_username" {
   description = "Database username"
   type = string
-  default = "admin"
 }
 
 variable "db_password" {

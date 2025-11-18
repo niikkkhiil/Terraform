@@ -40,7 +40,7 @@ resource "aws_subnet" "public2" {
     }
 }
 
-# Private Subnet 1
+## Private Subnet 1
 resource "aws_subnet" "private" {
     vpc_id = aws_vpc.main.id
     cidr_block = cidrsubnet(var.vpc_cidr, 8, 2)

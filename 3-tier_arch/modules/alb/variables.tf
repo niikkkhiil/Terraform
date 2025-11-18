@@ -25,5 +25,4 @@ variable "web_instance_id" {
 variable "alb_ingress_ports" {
   description = "List of ingress ports for ALB"
   type = list(number)
-  default = [80, 443]
 }

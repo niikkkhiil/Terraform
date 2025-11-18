@@ -24,6 +24,7 @@ module "compute" {
   private_subnet_id = module.vpc.private_subnet_id
   web_ingress_ports = var.web_ingress_ports
   app_ingress_ports = var.app_ingress_ports
+  public_subnet_cidrs = ["10.0.1.0/24", "10.0.4.0/24"]
 }
 
 module "alb" {
@@ -33,6 +34,7 @@ module "alb" {
   vpc_id = module.vpc.vpc_id
   public_subnet_ids = module.vpc.public_subnet_ids
   web_instance_id = module.compute.web_instance_id
+  alb_ingress_ports = [80, 443]
 }
 
 module "rds" {
@@ -46,4 +48,9 @@ module "rds" {
   db_name = var.db_name
   db_username = var.db_username
   db_password = var.db_password
+  allocated_storage = 20
+  engine = "mysql"
+  engine_version = "8.0"
+  instance_class = "db.t3.micro"
+  db_ports = [3306]
 }
