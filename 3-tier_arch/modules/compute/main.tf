@@ -16,14 +16,23 @@ resource "aws_security_group" "web" {
     name_prefix = "${var.project_name}-${var.environment}-web-"
     vpc_id = var.vpc_id
     
+    # Dynamic ingress for web ports from ALB subnets
     dynamic "ingress" {
         for_each = var.web_ingress_ports
         content {
             from_port = ingress.value
             to_port = ingress.value
             protocol = "tcp"
-            cidr_blocks = ["0.0.0.0/0"]
+            cidr_blocks = var.public_subnet_cidrs
         }
+    }
+    
+    # SSH from specific CIDR (replace with your IP)
+    ingress {
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        cidr_blocks = ["10.0.0.0/16"]  # Only from VPC
     }
     
     egress {
@@ -54,6 +63,7 @@ resource "aws_security_group" "app" {
     name_prefix = "${var.project_name}-${var.environment}-app-"
     vpc_id      = var.vpc_id
     
+    # Application ports from web tier only
     dynamic "ingress" {
         for_each = var.app_ingress_ports
         content {
@@ -62,6 +72,14 @@ resource "aws_security_group" "app" {
             protocol = "tcp"
             security_groups = [aws_security_group.web.id]
         }
+    }
+    
+    # SSH from web tier for management
+    ingress {
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        security_groups = [aws_security_group.web.id]
     }
     
     egress {

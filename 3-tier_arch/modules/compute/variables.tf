@@ -45,3 +45,10 @@ variable "app_ingress_ports" {
     default     = [8080]
 }
 
+
+
+variable "public_subnet_cidrs" {
+    description = "List of public subnet CIDRs for ALB access"
+    type        = list(string)
+    default     = ["10.0.1.0/24", "10.0.2.0/24"]
+}

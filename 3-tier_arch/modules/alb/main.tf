@@ -3,18 +3,14 @@ resource "aws_security_group" "alb" {
   name_prefix = "${var.project_name}-${var.environment}-alb-"
   vpc_id      = var.vpc_id
   
-  ingress {
-    from_port = 80
-    to_port   = 80
-    protocol  = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  
-  ingress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = var.alb_ingress_ports
+    content {
+      from_port = ingress.value
+      to_port = ingress.value
+      protocol = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
   }
   
   egress {

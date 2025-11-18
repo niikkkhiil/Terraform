@@ -62,3 +62,8 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+variable "db_ports" {
+  description = "List of database ports"
+  type = list(number)
+  default = [3306]
+}

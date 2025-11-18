@@ -18,7 +18,12 @@ variable "public_subnet_ids" {
   type = list(string)
 }
 
-variable "alb_security_group_id" {
-  description = "Security group ID for ALB"
+variable "web_instance_id" {
+  description = "Web server instance ID for target group attachment"
   type = string
+}
+variable "alb_ingress_ports" {
+  description = "List of ingress ports for ALB"
+  type = list(number)
+  default = [80, 443]
 }
