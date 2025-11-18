@@ -10,7 +10,7 @@ resource "aws_vpc" "main" {
     }
 }
 
-# Public Subnet
+# Public Subnet 1
 resource "aws_subnet" "public" {
     vpc_id = aws_vpc.main.id
     cidr_block = cidrsubnet(var.vpc_cidr, 8, 1)
@@ -18,7 +18,22 @@ resource "aws_subnet" "public" {
     map_public_ip_on_launch = true
     
     tags = {
-        Name = "${var.project_name}-${var.environment}-public"
+        Name = "${var.project_name}-${var.environment}-public-1"
+        Type = "Public"
+        Environment = var.environment
+        Project = var.project_name
+    }
+}
+
+# Public Subnet 2
+resource "aws_subnet" "public2" {
+    vpc_id = aws_vpc.main.id
+    cidr_block = cidrsubnet(var.vpc_cidr, 8, 4)
+    availability_zone = length(var.availability_zones) > 1 ? var.availability_zones[1] : var.availability_zones[0]
+    map_public_ip_on_launch = true
+    
+    tags = {
+        Name = "${var.project_name}-${var.environment}-public-2"
         Type = "Public"
         Environment = var.environment
         Project = var.project_name
@@ -108,6 +123,11 @@ resource "aws_route_table" "private" {
 
 resource "aws_route_table_association" "public" {
     subnet_id = aws_subnet.public.id
+    route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public2" {
+    subnet_id = aws_subnet.public2.id
     route_table_id = aws_route_table.public.id
 }
 
