@@ -27,7 +27,6 @@ resource "aws_security_group" "web" {
         }
     }
     
-    # SSH from specific CIDR (replace with your IP)
     ingress {
         from_port = 22
         to_port = 22
